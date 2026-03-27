@@ -88,6 +88,7 @@ const connectUser = async (req, res) => {
       expert: {
         name: expert.name,
         subject: expert.subjectLabel,
+        description: expert.description,
         isOnline: expert.isOnline,
       },
     });

@@ -41,6 +41,17 @@ const DashboardPage = () => {
     }
   }, []);
 
+  const handleDeleteRoom = async (roomId) => {
+    if (!window.confirm('Are you sure you want to delete this session?')) return;
+    try {
+      await api.delete(`/chat/room/${roomId}`);
+      fetchRooms();
+    } catch (err) {
+      console.error('Delete room error:', err);
+      alert('Failed to delete session.');
+    }
+  };
+
   useEffect(() => { fetchRooms(); }, [fetchRooms]);
 
   // Listen for new user waiting events
@@ -184,19 +195,28 @@ const DashboardPage = () => {
                   </div>
                   <div className={styles.roomMeta}>
                     <span>{formatTime(room.createdAt)}</span>
-                    <span>{room.messageCount} msg{room.messageCount !== 1 ? 's' : ''}</span>
+                    <span>{room.messageCount} messages</span>
                   </div>
                   {room.lastMessage && (
                     <div className={styles.lastMsg}>
                       "{room.lastMessage.message || '[file]'}"
                     </div>
                   )}
-                  <button
-                    className={styles.roomJoinBtn}
-                    onClick={() => handleJoinRoom(room.roomId)}
-                  >
-                    Open Chat →
-                  </button>
+                  <div className={styles.roomActions}>
+                    <button
+                      className={styles.roomJoinBtn}
+                      onClick={() => handleJoinRoom(room.roomId)}
+                    >
+                      Open Chat →
+                    </button>
+                    <button
+                      className={styles.deleteSessionBtn}
+                      onClick={() => handleDeleteRoom(room.roomId)}
+                      title="Delete Session"
+                    >
+                      🗑
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

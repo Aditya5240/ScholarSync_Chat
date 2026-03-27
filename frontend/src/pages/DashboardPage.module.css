@@ -269,8 +269,14 @@
   white-space: nowrap;
 }
 
-.roomJoinBtn {
+.roomActions {
+  display: flex;
+  gap: 0.5rem;
   margin-top: 0.25rem;
+}
+
+.roomJoinBtn {
+  flex: 1;
   background: var(--bg-elevated);
   border: 1px solid var(--border-bright);
   color: var(--accent);
@@ -282,6 +288,19 @@
   transition: var(--transition);
 }
 .roomJoinBtn:hover { background: var(--accent-dim); }
+
+.deleteSessionBtn {
+  width: 40px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+.deleteSessionBtn:hover { background: rgba(239, 68, 68, 0.2); border-color: #ef4444; }
 
 /* ── Empty / Loader ───────────────────────────────────────── */
 .emptyState {

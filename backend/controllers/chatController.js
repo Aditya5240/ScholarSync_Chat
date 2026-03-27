@@ -166,4 +166,27 @@ const getRoomsBySubject = async (req, res) => {
   }
 };
 
-module.exports = { getRoomInfo, getMessages, uploadFile, getExpertRooms, getUserRooms, getRoomsBySubject };
+// @desc    Delete a chat room and its messages
+// @route   DELETE /api/chat/room/:roomId
+// @access  Public (should ideally be protected, but for guest history simplicity we keep it public)
+const deleteRoom = async (req, res) => {
+  try {
+    const { roomId } = req.params;
+
+    // Delete the room document
+    const room = await ChatRoom.findOneAndDelete({ roomId });
+    if (!room) {
+      return res.status(404).json({ message: 'Room not found' });
+    }
+
+    // Delete all messages associated with this room
+    await Message.deleteMany({ roomId });
+
+    res.json({ message: 'Room and messages deleted successfully' });
+  } catch (error) {
+    console.error('Delete room error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+module.exports = { getRoomInfo, getMessages, uploadFile, getExpertRooms, getUserRooms, getRoomsBySubject, deleteRoom };

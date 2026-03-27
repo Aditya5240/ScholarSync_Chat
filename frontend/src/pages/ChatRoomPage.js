@@ -76,6 +76,24 @@ const ChatRoomPage = () => {
     fetchSubjectHistory();
   }, [fetchSubjectHistory]);
 
+  // ── Delete Room ───────────────────────────────────────────────────────────
+  const handleDeleteRoom = async (e, targetRoomId) => {
+    e.stopPropagation(); // prevent navigation
+    if (!window.confirm('Delete this chat history permanently?')) return;
+
+    try {
+      await api.delete(`/chat/room/${targetRoomId}`);
+      if (targetRoomId === roomId) {
+        navigate('/login'); // if current room deleted, exit
+      } else {
+        fetchSubjectHistory(); // refresh list
+      }
+    } catch (err) {
+      console.error('Delete room error:', err);
+      alert('Failed to delete chat.');
+    }
+  };
+
   // ── Join socket room ───────────────────────────────────────────────────────
   useEffect(() => {
     if (!socket || !connected || !roomInfo) return;
@@ -213,6 +231,17 @@ const ChatRoomPage = () => {
                 ? `Expert: ${roomInfo?.expert?.name}`
                 : `You are the expert`}
             </div>
+            {role === 'user' && roomInfo?.expert?.description && (
+              <div className={styles.expertDescWrapper}>
+                <div className={styles.expertDesc}>
+                  {roomInfo.expert.description}
+                </div>
+                <div className={styles.expertDescDropdown}>
+                  <strong>About Expert:</strong><br/>
+                  {roomInfo.expert.description}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -229,11 +258,7 @@ const ChatRoomPage = () => {
             </span>
           </div>
 
-          {!showVideo && (
-            <button className={styles.videoBtn} onClick={handleStartCall} title="Start video call">
-              📹 Start Call
-            </button>
-          )}
+          {/* Video call button removed per request */}
 
           {role === 'expert' && (
             <button
@@ -289,6 +314,13 @@ const ChatRoomPage = () => {
                   >
                     <div className={styles.historyHeader}>
                       <span className={styles.historyTime}>{formatTime(item.createdAt)}</span>
+                      <button 
+                        className={styles.deleteBtn} 
+                        onClick={(e) => handleDeleteRoom(e, item.roomId)}
+                        title="Delete Session"
+                      >
+                        🗑
+                      </button>
                     </div>
                     <div className={styles.historyLastMsg}>
                       {item.lastMessage?.message || 'Empty Conversation'}
@@ -303,13 +335,13 @@ const ChatRoomPage = () => {
           </aside>
         )}
 
-        {/* Video panel - shown when call is active */}
-        {showVideo && (
+        {/* Video panel hidden per request */}
+        {/* {showVideo && (
           <VideoPanel
             webrtc={webrtc}
             onEndCall={handleEndCall}
           />
-        )}
+        )} */}
 
         {/* Chat panel - always visible */}
         <ChatPanel

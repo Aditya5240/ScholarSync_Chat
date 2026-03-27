@@ -67,7 +67,55 @@
 
 .expertName {
   font-size: 0.78rem;
-  color: var(--text-muted);
+  color: #ffffff;
+  opacity: 0.9;
+}
+
+.expertDescWrapper {
+  position: relative;
+  cursor: help;
+}
+
+.expertDesc {
+  font-size: 0.72rem;
+  color: #ffffff; /* Bright white as requested */
+  opacity: 0.85;
+  max-width: 280px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 0.15rem;
+  transition: opacity 0.2s ease;
+}
+
+.expertDescWrapper:hover .expertDesc {
+  opacity: 1;
+}
+
+.expertDescDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-bright);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  width: 320px;
+  font-size: 0.8rem;
+  color: #ffffff;
+  line-height: 1.5;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.expertDescWrapper:hover .expertDescDropdown {
+  opacity: 1;
+  transform: translateY(5px);
+  pointer-events: auto;
 }
 
 .topRight {
@@ -228,7 +276,25 @@
 
 .historyHeader {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.deleteBtn {
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  line-height: 1;
+  transition: all 0.2s ease;
+}
+
+.deleteBtn:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
 }
 
 .historyTime {
