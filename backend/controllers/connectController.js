@@ -79,7 +79,7 @@ const connectUser = async (req, res) => {
     });
 
     const chatUrl = `/chat/${roomId}`;
-    const fullUrl = `${process.env.CLIENT_URL || 'http://localhost:3000'}${chatUrl}`;
+    const fullUrl = `https://scholarsync-chat-frontend-ixje.onrender.com${chatUrl}`;
 
     res.json({
       roomId,
@@ -136,7 +136,7 @@ const connectAndRedirect = async (req, res) => {
       });
     }
 
-    const fullUrl = `${process.env.CLIENT_URL || 'http://localhost:3000'}/chat/${roomId}`;
+    const fullUrl = `https://scholarsync-chat-frontend-ixje.onrender.com/chat/${roomId}`;
     res.redirect(fullUrl);
   } catch (error) {
     console.error('Redirect Connect error:', error);
@@ -162,7 +162,7 @@ const getAllExperts = async (req, res) => {
       const existingRoom = activeRooms.find(r => r.expertId.toString() === expert._id.toString());
       
       let chatUrl, fullUrl;
-      const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
+      const clientUrl = 'https://scholarsync-chat-frontend-ixje.onrender.com';
       
       // Force Render URL because process.env.SERVER_URL is likely misconfigured to localhost on Render
       const serverUrl = 'https://scholarsync-chat-uh1x.onrender.com';

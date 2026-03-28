@@ -19,7 +19,7 @@ const server = http.createServer(app);
 // Initialize Socket.IO with CORS
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    origin: 'https://scholarsync-chat-frontend-ixje.onrender.com',
     methods: ['GET', 'POST'],
     credentials: true,
   },
@@ -30,7 +30,7 @@ connectDB();
 
 // Middleware
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: 'https://scholarsync-chat-frontend-ixje.onrender.com',
   credentials: true,
 }));
 app.use(express.json());
@@ -57,7 +57,7 @@ const PORT = process.env.PORT || 5002;
 server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📡 Socket.IO ready`);
-  console.log(`🌍 Client URL: ${process.env.CLIENT_URL || 'http://localhost:3000'}`);
+  console.log(`🌍 Client URL: https://scholarsync-chat-frontend-ixje.onrender.com`);
 });
 
 module.exports = { app, io };
