@@ -157,28 +157,41 @@ const getAllExperts = async (req, res) => {
       ? await ChatRoom.find({ studentId, isActive: true })
       : [];
 
-    const result = allExperts.map(expert => {
+    const result = await Promise.all(allExperts.map(async expert => {
       // Check if this student already has an active room with this expert
-      const existingRoom = activeRooms.find(r => r.expertId.toString() === expert._id.toString());
+      let existingRoom = activeRooms.find(r => r.expertId.toString() === expert._id.toString());
       
-      let chatUrl, fullUrl;
       const clientUrl = 'https://scholarsync-chat-frontend-ixje.onrender.com';
       
-      // Force Render URL because process.env.SERVER_URL is likely misconfigured to localhost on Render
-      const serverUrl = 'https://scholarsync-chat-uh1x.onrender.com';
-
-      if (existingRoom) {
-        // Direct to existing session containing chat history
-        chatUrl = `/chat/${existingRoom.roomId}`;
-        fullUrl = `${clientUrl}${chatUrl}`;
-      } else {
-        // Direct to backend redirect endpoint that will lazily create the room ONLY when clicked
-        chatUrl = `/api/connect/redirect?subject=${expert.subject}${studentId ? `&studentId=${studentId}` : ''}`;
-        fullUrl = `${serverUrl}${chatUrl}`;
+      if (!existingRoom && studentId) {
+        // Pre-create the room directly in the DB so we can provide a frontend URL
+        const newRoomId = uuidv4();
+        existingRoom = await ChatRoom.create({
+          roomId: newRoomId,
+          expertId: expert._id,
+          subject: expert.subject,
+          studentId,
+        });
       }
 
+      // If no studentId was provided, generate a temporary loose room ID
+      const finalRoomId = existingRoom ? existingRoom.roomId : uuidv4();
+
+      if (!existingRoom && !studentId) {
+        // Create an anonymous room
+        await ChatRoom.create({
+          roomId: finalRoomId,
+          expertId: expert._id,
+          subject: expert.subject,
+          studentId: null,
+        });
+      }
+
+      const chatUrl = `/chat/${finalRoomId}`;
+      const fullUrl = `${clientUrl}${chatUrl}`;
+
       return {
-        roomId: existingRoom ? existingRoom.roomId : null,
+        roomId: finalRoomId,
         chatUrl,
         fullUrl,
         expert: {
@@ -188,7 +201,7 @@ const getAllExperts = async (req, res) => {
           isOnline: expert.isOnline,
         }
       };
-    });
+    }));
 
     res.json(result);
   } catch (error) {
