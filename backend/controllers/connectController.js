@@ -163,7 +163,9 @@ const getAllExperts = async (req, res) => {
       
       let chatUrl, fullUrl;
       const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
-      const serverUrl = process.env.SERVER_URL || 'https://scholarsync-chat-uh1x.onrender.com';
+      
+      // Force Render URL because process.env.SERVER_URL is likely misconfigured to localhost on Render
+      const serverUrl = 'https://scholarsync-chat-uh1x.onrender.com';
 
       if (existingRoom) {
         // Direct to existing session containing chat history

@@ -61,7 +61,9 @@ const uploadFile = async (req, res) => {
       return res.status(400).json({ message: 'No file uploaded' });
     }
 
-    const fileUrl = `${process.env.SERVER_URL || 'http://localhost:5002'}/uploads/${req.file.filename}`;
+    // Force Render URL for file uploads as well
+    const serverUrl = 'https://scholarsync-chat-uh1x.onrender.com';
+    const fileUrl = `${serverUrl}/uploads/${req.file.filename}`;
     const fileType = req.file.mimetype.startsWith('image/') ? 'image' : 'file';
 
     res.json({
